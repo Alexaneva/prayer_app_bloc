@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../app_widgets/app_colors.dart';
+import '../../../app_widgets/typography.dart';
 import '../../../text_editing_сontrollers/auth_text_editing_сontrollers.dart';
 import '../../../validation/auth_validation.dart';
 
@@ -69,15 +71,15 @@ class _CustomInputFieldState extends State<CustomInputField> {
   @override
   Widget build(BuildContext context) {
     Color borderColor = _validationMessage == null
-        ? Colors.grey
-        : (_validationMessage!.isEmpty ? Colors.green : Colors.red);
+        ? AppColors.grayScale700
+        : (_validationMessage!.isEmpty ? AppColors.success : AppColors.error);
     Color textColor;
     if (widget.fieldType == FieldType.email || widget.fieldType == FieldType.confirmPassword) {
       textColor = (_hasInteracted && (_validationMessage == null || _validationMessage!.isEmpty))
-          ? Colors.green
-          : Colors.grey;
+          ? AppColors.success
+          : AppColors.grayScale700;
     } else {
-      textColor = Colors.grey;
+      textColor = AppColors.grayScale700;
     }
 
     return TextFormField(
@@ -85,7 +87,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
       controller: widget.controller,
       decoration: InputDecoration(
         hintText: widget.labelText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 12),
+        hintStyle: AppTypography.heading4,
         border: UnderlineInputBorder(
           borderSide: BorderSide(color: borderColor),
         ),

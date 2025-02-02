@@ -1,4 +1,6 @@
-import 'package:flutter/cupertino.dart';
+
+
+import 'package:flutter/material.dart';
 
 class AuthTextEditingControllers {
   static final signInEmail = TextEditingController();
@@ -8,7 +10,14 @@ class AuthTextEditingControllers {
   static final signUpPassword = TextEditingController();
   static final signUpConfirmPassword = TextEditingController();
 
-  static bool get isFormFilled {
+  static bool get isSignInFormFilled {
     return signInEmail.text.isNotEmpty && signInPassword.text.isNotEmpty;
+  }
+
+  static bool get isSignUpFormFilled {
+    return signUpName.text.isNotEmpty &&
+        signUpEmail.text.isNotEmpty &&
+        signUpPassword.text.isNotEmpty &&
+        signUpConfirmPassword.text.isNotEmpty;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
@@ -9,62 +11,55 @@ import 'my_category_desk_state.dart';
 class MyDeskBloc extends Bloc<MyDeskEvent, MyDeskState> {
   final ApiServiceMyDesk apiServiceDesk;
 
-  MyDeskBloc(this.apiServiceDesk) : super(InitialCategoryDesk()) {
+  MyDeskBloc(this.apiServiceDesk) : super(MyDeskState(status: MyDeskStatus.initial)) {
     on<MyDeskEvent>((event, emit) async {
-      switch (event.type) {
-        case MyDeskEventType.loadMyCategories:
-          await _loadCategories(emit);
-          break;
-        case MyDeskEventType.deleteCategory:
-          await _deleteCategory(emit, event.columnId!);
-          break;
-        case MyDeskEventType.addCategory:
-          await _addCategory(emit, event.category!);
-          break;
-        case MyDeskEventType.updateCategory:
-          await _updateCategory(emit, event.columnId!, event.newTitle!);
-          break;
+      if (event is LoadMyCategories) {
+        await _loadCategories(emit);
+      } else if (event is DeleteCategory) {
+        await _deleteCategory(emit, event.columnId);
+      } else if (event is AddCategory) {
+        await _addCategory(emit, event.category);
+      } else if (event is UpdateCategory) {
+        await _updateCategory(emit, event.columnId, event.newTitle);
       }
     });
   }
 
   Future<void> _loadCategories(Emitter<MyDeskState> emit) async {
-    emit(LoadingCategoryDesk());
+    emit(state.copyWith(status: MyDeskStatus.loading));
     try {
       final categories = await apiServiceDesk.getMyCategories();
-      emit(LoadedCategoryDesk(categories));
+      emit(state.copyWith(status: MyDeskStatus.success, categories: categories));
     } catch (e) {
-      emit(FailedLoadedCategoryDesk(e.toString()));
+      emit(state.copyWith(status: MyDeskStatus.error, errorMessage: e.toString()));
     }
   }
 
   Future<void> _deleteCategory(Emitter<MyDeskState> emit, int columnId) async {
     try {
       await apiServiceDesk.deleteCategory(columnId);
-      emit(CategoryDeleted());
-      add(MyDeskEvent.loadMyCategories());
+      emit(state.copyWith(categories: await apiServiceDesk.getMyCategories()));
     } catch (e) {
-      emit(FailedLoadedCategoryDesk(e.toString()));
+      emit(state.copyWith(status: MyDeskStatus.error, errorMessage: e.toString()));
     }
   }
 
   Future<void> _addCategory(Emitter<MyDeskState> emit, Category category) async {
     try {
       await apiServiceDesk.addCategory(category);
-      emit(CategoryAdded());
-      add(MyDeskEvent.loadMyCategories());
+      emit(state.copyWith(categories: await apiServiceDesk.getMyCategories()));
     } catch (e) {
-      emit(FailedLoadedCategoryDesk(e.toString()));
+      emit(state.copyWith(status: MyDeskStatus.error, errorMessage: e.toString()));
     }
   }
 
   Future<void> _updateCategory(Emitter<MyDeskState> emit, int columnId, String newTitle) async {
     try {
       await apiServiceDesk.updateCategory(columnId, newTitle);
-      emit(CategoryUpdated());
-      add(MyDeskEvent.loadMyCategories());
+      emit(state.copyWith(categories: await apiServiceDesk.getMyCategories()));
+      emit(state.copyWith(status: MyDeskStatus.error, errorMessage: e.toString()));
     } catch (e) {
-      emit(FailedLoadedCategoryDesk(e.toString()));
+      emit(state.copyWith(status: MyDeskStatus.error, errorMessage: e.toString()));
     }
   }
 }

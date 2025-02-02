@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prayer_bloc/app_widgets/custom_button.dart';
 import 'package:prayer_bloc/screens/main_screen/my_desk/prayer_details/widgets/comments_section.dart';
 import 'package:prayer_bloc/screens/main_screen/my_desk/prayer_details/widgets/prayer_statistics_grid.dart';
 
+import '../../../../app_widgets/app_colors.dart';
 import '../../../../bloc/my_desk/my_detail_prayer_bloc/my_detail_prayer_bloc.dart';
 import '../../../../bloc/my_desk/my_detail_prayer_bloc/my_detail_prayer_event.dart';
 import '../../../../bloc/my_desk/my_detail_prayer_bloc/my_detail_prayer_state.dart';
+import '../../../../text_editing_сontrollers/auth_text_editing_сontrollers.dart';
 
 class MyDetailScreen extends StatefulWidget {
   final int prayerId;
@@ -44,55 +47,69 @@ class _MyDetailScreenState extends State<MyDetailScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: PrayerStatisticsGrid(state: state.prayer,),
+                  child: PrayerStatisticsGrid(
+                    state: state.prayer,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 400.0,
                   height: 55.0,
-                  child: ElevatedButton(
+                  child: CustomElevatedButton(
+                    text: 'Prayed',
                     onPressed: () {
                       final now = DateTime.now();
-                      if (state.prayer.lastPrayed == null || now
-                          .difference(state.prayer.lastPrayed!)
-                          .inHours >= 1) {
-                        context.read<MyPrayerDetailBloc>().add(IncreaseMyPrayers(state.prayer.prayerId));
+                      if (state.prayer.lastPrayed == null ||
+                          now.difference(state.prayer.lastPrayed!).inHours >=
+                              1) {
+                        context
+                            .read<MyPrayerDetailBloc>()
+                            .add(IncreaseMyPrayers(state.prayer.prayerId));
                       } else {
                         showDialog(
                           context: context,
-                          builder: (context) =>
-                              AlertDialog(
-                                title: Text(
-                                    'The counter can be pressed once per hour'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text('Ok'),
-                                  ),
-                                ],
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                                'The counter can be pressed once per hour'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Ok'),
                               ),
+                            ],
+                          ),
                         );
                       }
                     },
-                    child: Text('Prayed'),
+                    backgroundColor:
+                        AuthTextEditingControllers.isSignInFormFilled
+                            ? AppColors.grayScale800
+                            : AppColors.grayScale300,
+                    foregroundColor: AppColors.grayScale100,
                   ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: 400.0,
                   height: 55.0,
-                  child: ElevatedButton(
+                  child: CustomElevatedButton(
+                    text: !state.isFollowing ? 'Following ✓' : 'Follow',
                     onPressed: () {
                       if (!state.isFollowing) {
-                        context.read<MyPrayerDetailBloc>().add(SubscribeToPrayer(
-                            state.prayer.prayerId));
+                        context
+                            .read<MyPrayerDetailBloc>()
+                            .add(SubscribeToPrayer(state.prayer.prayerId));
                       } else {
-                        context.read<MyPrayerDetailBloc>().add(
-                            UnsubscribeFromPrayer(state.prayer.prayerId));
+                        context
+                            .read<MyPrayerDetailBloc>()
+                            .add(UnsubscribeFromPrayer(state.prayer.prayerId));
                       }
                     },
-                    child: Text(
-                        !state.isFollowing ? 'Following ✓' : 'Follow'),
+                    backgroundColor:
+                        AuthTextEditingControllers.isSignInFormFilled
+                            ? AppColors.grayScale800
+                            : AppColors.grayScale300,
+                    foregroundColor: AppColors.grayScale100,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -111,12 +128,14 @@ class _MyDetailScreenState extends State<MyDetailScreen> {
             ),
           );
         } else if (state is PrayerDetailError) {
-          return Center(child: Text('Error: ${state.error}'));
+          return Center(
+              child: Text(
+            'Error: ${state.error}',
+            style: TextStyle(color: AppColors.error),
+          ));
         }
         return Container();
       },
     );
   }
 }
-
-

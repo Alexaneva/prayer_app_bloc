@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app_images.dart';
+import '../../app_widgets/app_colors.dart';
+import '../../app_widgets/app_images.dart';
+import '../../app_widgets/custom_button.dart';
+import '../../app_widgets/typography.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../bloc/auth_bloc/auth_event.dart';
 import '../../bloc/auth_bloc/auth_state.dart';
@@ -25,21 +28,21 @@ class SignUpScreen extends StatelessWidget {
               );
             }
           },
-          child: Stack(
+          child: Column(
           children: [
-            LayoutBuilder(builder: (context, constraints) {
-              return Container(
-                height: constraints.maxHeight * 0.45,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(AppImages.backGround),
-                    fit: BoxFit.contain,
+               Flexible(
+                 flex: 1,
+                 child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(AppImages.backGround),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-              );
-            }),
-            Align(
-              alignment: Alignment.center,
+                 ),
+               ),
+            Flexible(
+             flex: 2,
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -53,10 +56,7 @@ class SignUpScreen extends StatelessWidget {
                     children: [
                       const Text(
                         'Registration',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: AppTypography.heading1,
                       ),
                       CustomInputField(
                         controller: AuthTextEditingControllers.signUpName,
@@ -87,38 +87,23 @@ class SignUpScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                              AuthTextEditingControllers.isFormFilled
-                                  ? Colors.black
-                                  : Colors.grey.shade300,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 50),
-                              minimumSize: const Size(400, 60),
-                            ),
+                          return CustomElevatedButton(
+                            text: 'Register',
                             onPressed: () {
-                              if (AuthTextEditingControllers
-                                      .signUpName.text.isNotEmpty &&
-                                  AuthTextEditingControllers
-                                      .signUpEmail.text.isNotEmpty &&
-                                  AuthTextEditingControllers
-                                      .signUpPassword.text.isNotEmpty &&
-                                  AuthTextEditingControllers
-                                          .signUpPassword.text ==
-                                      AuthTextEditingControllers
-                                          .signUpConfirmPassword.text) {
-                                context.read<AuthBloc>().add(AuthEvent(
-                                    email: AuthTextEditingControllers
-                                        .signUpEmail.text,
-                                    password: AuthTextEditingControllers
-                                        .signUpPassword.text,
-                                    name: AuthTextEditingControllers
-                                        .signUpName.text));
-                              }
+                              context.read<AuthBloc>().add(AuthEvent(
+                                            email: AuthTextEditingControllers
+                                                .signUpEmail.text,
+                                            password: AuthTextEditingControllers
+                                                .signUpPassword.text,
+                                            name: AuthTextEditingControllers
+                                                .signUpName.text));
                             },
-                            child: const Text('Register'),
+                            backgroundColor:
+                            AuthTextEditingControllers.isSignInFormFilled
+                                ? AppColors.grayScale800
+                                : AppColors.grayScale300,
+                            foregroundColor: AppColors.grayScale100,
+
                           );
                         },
                       ),
@@ -131,9 +116,9 @@ class SignUpScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text("Already have an account?",
-                                    style: TextStyle(color: Colors.black54)),
+                                    style: TextStyle(color: AppColors.grayScale800)),
                                 const Text(" Sign in",
-                                    style: TextStyle(color: Colors.red)),
+                                    style: TextStyle(color: AppColors.error)),
                               ],
                             ),
                           ),

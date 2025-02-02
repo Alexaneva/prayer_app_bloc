@@ -7,7 +7,7 @@ import 'package:prayer_bloc/screens/authorisation/sign_up_screen.dart';
 import 'package:prayer_bloc/screens/main_screen/user_desks/user_prayer_details/user_prayer_details.dart';
 import 'package:prayer_bloc/screens/main_screen/user_desks/user_prayers/user_prayers_list.dart';
 
-import 'screens/authorisation/sign_in_screen.dart';
+import '../screens/authorisation/sign_in_screen.dart';
 
 class MyAppRouts {
   static final GoRouter router = GoRouter(

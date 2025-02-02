@@ -1,43 +1,27 @@
-
-
 import '../../../models/prayer_category.dart';
 
-enum MyDeskStatus { idle, loading, success, error }
+enum MyDeskStatus { initial, loading, success, error }
 
-abstract class MyDeskState {
+class MyDeskState {
   final MyDeskStatus status;
+  final List<Category>? categories;
+  final String? errorMessage;
 
-  MyDeskState(this.status);
-}
+  MyDeskState({
+    required this.status,
+    this.categories,
+    this.errorMessage,
+  });
 
-class InitialCategoryDesk extends MyDeskState {
-  InitialCategoryDesk() : super(MyDeskStatus.idle);
-}
-
-class LoadingCategoryDesk extends MyDeskState {
-  LoadingCategoryDesk() : super(MyDeskStatus.loading);
-}
-
-class LoadedCategoryDesk extends MyDeskState {
-  final List<Category> categories;
-
-  LoadedCategoryDesk(this.categories) : super(MyDeskStatus.success);
-}
-
-class FailedLoadedCategoryDesk extends MyDeskState {
-  final String error;
-
-  FailedLoadedCategoryDesk(this.error) : super(MyDeskStatus.error);
-}
-
-class CategoryAdded extends MyDeskState {
-  CategoryAdded() : super(MyDeskStatus.success);
-}
-
-class CategoryDeleted extends MyDeskState {
-  CategoryDeleted() : super(MyDeskStatus.success);
-}
-
-class CategoryUpdated extends MyDeskState {
-  CategoryUpdated() : super(MyDeskStatus.success);
+  MyDeskState copyWith({
+    MyDeskStatus? status,
+    List<Category>? categories,
+    String? errorMessage,
+  }) {
+    return MyDeskState(
+      status: status ?? this.status,
+      categories: categories ?? this.categories,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }

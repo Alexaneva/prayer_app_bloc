@@ -62,6 +62,10 @@ flutter:
     - assets/images/no_prayer.png
     - assets/images/no_column.png
     - assets/images/no_followed.png
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/manrope.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

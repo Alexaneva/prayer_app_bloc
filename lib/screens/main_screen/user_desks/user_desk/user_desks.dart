@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:prayer_bloc/screens/main_screen/user_desks/user_desk/widgets/add_user_category_dialog.dart';
 import 'package:prayer_bloc/screens/main_screen/user_desks/user_desk/widgets/user_category_list.dart';
 
-import '../../../../app_images.dart';
+import '../../../../app_widgets/app_colors.dart';
+import '../../../../app_widgets/app_images.dart';
 import '../../../../bloc/user_desk/user_category_desk_bloc/user_category_desk_bloc.dart';
 import '../../../../bloc/user_desk/user_category_desk_bloc/user_category_desk_state.dart';
 
@@ -39,35 +40,35 @@ class _UserDesksState extends State<UserDesks> {
                 Expanded(
                   child: state.categories.isEmpty
                       ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20, left: 10, right: 10),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                            AssetImage(AppImages.noColumn),
-                            fit: BoxFit.contain,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 20, left: 10, right: 10),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(AppImages.noColumn),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: const DecorationImage(
+                                image: AssetImage(AppImages.backGround),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: UserCategoryListView(
+                                categories: state.categories),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                      : Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: const DecorationImage(
-                          image: AssetImage(AppImages.backGround),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: UserCategoryListView(categories: state.categories),
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 290, right: 15),
@@ -95,7 +96,11 @@ class _UserDesksState extends State<UserDesks> {
             ),
           );
         } else if (state is FailedLoadedCategoryDesk) {
-          return Center(child: Text('Error: ${state.error}'));
+          return Center(
+              child: Text(
+            'Error: ${state.error}',
+            style: TextStyle(color: AppColors.error),
+          ));
         }
         return Container();
       },
@@ -111,5 +116,3 @@ class _UserDesksState extends State<UserDesks> {
     );
   }
 }
-
-

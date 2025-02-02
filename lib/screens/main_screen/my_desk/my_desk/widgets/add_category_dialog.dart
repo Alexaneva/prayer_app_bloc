@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prayer_bloc/app_widgets/app_colors.dart';
+import 'package:prayer_bloc/app_widgets/custom_button.dart';
+import 'package:prayer_bloc/app_widgets/typography.dart';
 
 import '../../../../../bloc/my_desk/my_category_desk_bloc/my_category_desk_bloc.dart';
 import '../../../../../bloc/my_desk/my_category_desk_bloc/my_category_desk_event.dart';
 import '../../../../../models/prayer_category.dart';
+import '../../../../../text_editing_сontrollers/auth_text_editing_сontrollers.dart';
 
 class AddCategoryDialog extends StatelessWidget {
   const AddCategoryDialog({super.key});
@@ -31,19 +35,16 @@ class AddCategoryDialog extends StatelessWidget {
               children: [
                 Text(
                   'New Column',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 23),
+                  style: AppTypography.heading1
                 ),
                 const SizedBox(width: 77),
                 CircleAvatar(
                   radius: 15,
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: AppColors.grayScale200,
                   child: IconButton(
                     icon: Icon(
                       Icons.close,
-                      color: Colors.grey[700],
+                      color: AppColors.grayScale700,
                       size: 15,
                     ),
                     onPressed: () {
@@ -58,37 +59,33 @@ class AddCategoryDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                   labelText: 'Enter title of column',
-                  labelStyle: TextStyle(color: Colors.grey[300])),
+                  labelStyle: TextStyle(color: AppColors.grayScale300)),
               onChanged: (value) {
                 isButtonEnabled = value.isNotEmpty;
               },
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isButtonEnabled
-                  ? () async {
-                final newCategory = Category(
-                  id: -1,
-                  title: controller.text,
-                  description: '',
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                  deletedAt: null,
-                );
-                context.read<MyDeskBloc>().add(MyDeskEvent.addCategory(newCategory));
-                Navigator.of(context).pop();
-              }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor:
-                isButtonEnabled ? Colors.black : Colors.grey.shade300,
-                minimumSize: const Size(400, 60),
-              ),
-              child: const Text(
-                'Add',
-                style: TextStyle(color: Colors.white),
-              ),
+            CustomElevatedButton(
+                text: 'Add',
+                onPressed: isButtonEnabled
+                    ? () async {
+                  final newCategory = Category(
+                    id: -1,
+                    title: controller.text,
+                    description: '',
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now(),
+                    deletedAt: null,
+                  );
+                  context.read<MyDeskBloc>().add(AddCategory(newCategory));
+                  Navigator.of(context).pop();
+                }
+                    : null,
+              backgroundColor:
+              AuthTextEditingControllers.isSignInFormFilled
+                  ? AppColors.grayScale800
+                  : AppColors.grayScale300,
+              foregroundColor: AppColors.grayScale100,
             ),
           ],
         ),

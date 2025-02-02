@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:prayer_bloc/screens/main_screen/followed/followed_details_prayer/widgets/comments_section_followed_prayer.dart';
 import 'package:prayer_bloc/screens/main_screen/followed/followed_details_prayer/widgets/followed_prayer_statistic.dart';
 
+import '../../../../app_widgets/app_colors.dart';
+import '../../../../app_widgets/custom_button.dart';
 import '../../../../bloc/followed/followed_prayers_details/followed_prayers_details_bloc.dart';
 import '../../../../bloc/followed/followed_prayers_details/followed_prayers_details_event.dart';
 import '../../../../bloc/followed/followed_prayers_details/followed_prayers_details_state.dart';
+import '../../../../text_editing_сontrollers/auth_text_editing_сontrollers.dart';
 
 class FollowedPrayerDetailScreen extends StatefulWidget {
   final int prayerId;
@@ -16,15 +19,19 @@ class FollowedPrayerDetailScreen extends StatefulWidget {
       {super.key, required this.prayerTitle, required this.prayerId});
 
   @override
-  State<FollowedPrayerDetailScreen> createState() => _FollowedPrayerDetailScreenState();
+  State<FollowedPrayerDetailScreen> createState() =>
+      _FollowedPrayerDetailScreenState();
 }
 
-class _FollowedPrayerDetailScreenState extends State<FollowedPrayerDetailScreen> {
+class _FollowedPrayerDetailScreenState
+    extends State<FollowedPrayerDetailScreen> {
   final commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    context.read<FollowedPrayerDetailBloc>().add(LoadFollowedPrayerDetails(widget.prayerId));
+    context
+        .read<FollowedPrayerDetailBloc>()
+        .add(LoadFollowedPrayerDetails(widget.prayerId));
     return BlocBuilder<FollowedPrayerDetailBloc, FollowedPrayerDetailState>(
       builder: (context, state) {
         if (state is LoadingMyPrayersList) {
@@ -44,55 +51,67 @@ class _FollowedPrayerDetailScreenState extends State<FollowedPrayerDetailScreen>
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: FollowedPrayerStatisticsGrid(state: state.prayer,),
+                  child: FollowedPrayerStatisticsGrid(
+                    state: state.prayer,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 400.0,
                   height: 55.0,
-                  child: ElevatedButton(
+                  child: CustomElevatedButton(
+                    text: 'Prayed',
                     onPressed: () {
                       final now = DateTime.now();
-                      if (state.prayer.lastPrayed == null || now
-                          .difference(state.prayer.lastPrayed!)
-                          .inHours >= 1) {
-                        context.read<FollowedPrayerDetailBloc>().add(IncreaseFollowedPrayers(state.prayer.prayerId));
+                      if (state.prayer.lastPrayed == null ||
+                          now.difference(state.prayer.lastPrayed!).inHours >=
+                              1) {
+                        context.read<FollowedPrayerDetailBloc>().add(
+                            IncreaseFollowedPrayers(state.prayer.prayerId));
                       } else {
                         showDialog(
                           context: context,
-                          builder: (context) =>
-                              AlertDialog(
-                                title: Text(
-                                    'The counter can be pressed once per hour'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text('Ok'),
-                                  ),
-                                ],
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                                'The counter can be pressed once per hour'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Ok'),
                               ),
+                            ],
+                          ),
                         );
                       }
                     },
-                    child: Text('Prayed'),
+                    backgroundColor:
+                        AuthTextEditingControllers.isSignInFormFilled
+                            ? AppColors.grayScale800
+                            : AppColors.grayScale300,
+                    foregroundColor: AppColors.grayScale100,
                   ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: 400.0,
                   height: 55.0,
-                  child: ElevatedButton(
+                  child: CustomElevatedButton(
+                    text: !state.isFollowing ? 'Following ✓' : 'Follow',
                     onPressed: () {
                       if (!state.isFollowing) {
-                        context.read<FollowedPrayerDetailBloc>().add(SubscribeToFollowedPrayer(
-                            state.prayer.prayerId));
+                        context.read<FollowedPrayerDetailBloc>().add(
+                            SubscribeToFollowedPrayer(state.prayer.prayerId));
                       } else {
                         context.read<FollowedPrayerDetailBloc>().add(
-                            UnsubscribeFromFollowedPrayer(state.prayer.prayerId));
+                            UnsubscribeFromFollowedPrayer(
+                                state.prayer.prayerId));
                       }
                     },
-                    child: Text(
-                        !state.isFollowing ? 'Following ✓' : 'Follow'),
+                    backgroundColor:
+                        AuthTextEditingControllers.isSignInFormFilled
+                            ? AppColors.grayScale800
+                            : AppColors.grayScale300,
+                    foregroundColor: AppColors.grayScale100,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -111,12 +130,14 @@ class _FollowedPrayerDetailScreenState extends State<FollowedPrayerDetailScreen>
             ),
           );
         } else if (state is FollowedPrayerDetailError) {
-          return Center(child: Text('Error: ${state.error}'));
+          return Center(
+              child: Text(
+            'Error: ${state.error}',
+            style: TextStyle(color: AppColors.error),
+          ));
         }
         return Container();
       },
     );
   }
 }
-
-

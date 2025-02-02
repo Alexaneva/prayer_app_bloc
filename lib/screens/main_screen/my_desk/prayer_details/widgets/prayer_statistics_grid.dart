@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../app_images.dart';
+import '../../../../../app_widgets/app_images.dart';
 import '../../../../../models/prayer.dart';
 
 class PrayerStatisticsGrid extends StatelessWidget {

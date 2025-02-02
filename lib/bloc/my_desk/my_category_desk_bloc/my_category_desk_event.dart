@@ -1,36 +1,24 @@
 import '../../../models/prayer_category.dart';
 
+abstract class MyDeskEvent {}
 
-enum MyDeskEventType {
-  loadMyCategories,
-  deleteCategory,
-  addCategory,
-  updateCategory,
+class LoadMyCategories extends MyDeskEvent {}
+
+class DeleteCategory extends MyDeskEvent {
+  final int columnId;
+
+  DeleteCategory(this.columnId);
 }
 
-class MyDeskEvent {
-  final MyDeskEventType type;
-  final int? columnId;
-  final String? newTitle;
-  final Category? category;
+class AddCategory extends MyDeskEvent {
+  final Category category;
 
-  MyDeskEvent.loadMyCategories()
-      : type = MyDeskEventType.loadMyCategories,
-        columnId = null,
-        newTitle = null,
-        category = null;
+  AddCategory(this.category);
+}
 
-  MyDeskEvent.deleteCategory(this.columnId)
-      : type = MyDeskEventType.deleteCategory,
-        newTitle = null,
-        category = null;
+class UpdateCategory extends MyDeskEvent {
+  final int columnId;
+  final String newTitle;
 
-  MyDeskEvent.addCategory(this.category)
-      : type = MyDeskEventType.addCategory,
-        columnId = null,
-        newTitle = null;
-
-  MyDeskEvent.updateCategory(this.columnId, this.newTitle)
-      : type = MyDeskEventType.updateCategory,
-        category = null;
+  UpdateCategory(this.columnId, this.newTitle);
 }

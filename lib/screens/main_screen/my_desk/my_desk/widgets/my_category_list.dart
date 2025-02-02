@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prayer_bloc/app_widgets/app_colors.dart';
 
 import '../../../../../bloc/my_desk/my_category_desk_bloc/my_category_desk_bloc.dart';
 import '../../../../../bloc/my_desk/my_category_desk_bloc/my_category_desk_event.dart';
@@ -23,7 +24,7 @@ class CategoryListView extends StatelessWidget {
           background: Container(
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: AppColors.error,
               borderRadius: BorderRadius.circular(20),
             ),
             alignment: Alignment.centerRight,
@@ -31,7 +32,7 @@ class CategoryListView extends StatelessWidget {
             child: const Icon(Icons.delete, color: Colors.white),
           ),
           onDismissed: (direction) {
-            context.read<MyDeskBloc>().add(MyDeskEvent.deleteCategory(category.id));
+            context.read<MyDeskBloc>().add(DeleteCategory(category.id));
           },
           child: Padding(
             padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -47,9 +48,7 @@ class CategoryListView extends StatelessWidget {
                   onSubmitted: (value) {
                     category.title = value;
                     final columnId = category.id;
-                    context
-                        .read<MyDeskBloc>()
-                        .add(MyDeskEvent.updateCategory(columnId, value));
+                    context.read<MyDeskBloc>().add(UpdateCategory(columnId, value));
                   },
                   onTap: () {
                     GoRouter.of(context).go(
